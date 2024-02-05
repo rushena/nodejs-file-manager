@@ -19,22 +19,22 @@ export default class NavigationController extends EventHandler {
   }
 
   folderUp() {
-    EventHandler.HOME_DIR = path.dirname(this.getCurrentPath());
+    EventHandler.HOME_DIR = path.dirname(EventHandler.HOME_DIR);
     this.dispatchOperationEnd();
   }
 
   getFolder(newPath) {
+    console.log(newPath)
     if (!path) {
       this.dispatchInputError();
       return;
     }
 
-    stat(path).then((obj) => {
+    stat(newPath).then((obj) => {
       if (obj.isFile()) {
         this.dispatchOperationError();
         return;
       }
-
       EventHandler.HOME_DIR = newPath;
     }).catch(() => {
       this.dispatchOperationError();
