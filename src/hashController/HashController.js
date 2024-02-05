@@ -8,6 +8,7 @@ export default class HashController extends EventHandler {
   parseParams(_, ...args) {
     if (args.length < 1) {
       this.dispatchInputError();
+      this.dispatchOperationEnd();
       return;
     }
 

@@ -24,7 +24,6 @@ export default class NavigationController extends EventHandler {
   }
 
   getFolder(newPath) {
-    console.log(newPath)
     if (!path) {
       this.dispatchInputError();
       return;

@@ -31,20 +31,28 @@ export default class Controller extends EventHandler{
     const valueArr = value.trim().replace(this.EOL, '').split(' ');
     const command = valueArr.shift();
 
+    let hasController;
+
     Object.entries(this.commandsHandler).forEach(([key, val]) => {
       if (!val.includes(command)) return;
-
+      hasController = true;
       this[key].parseParams(command, ...(this.normalizePath(command, valueArr)));
-    })
+    });
+
+    if (!hasController) {
+      this.dispatchInputError();
+      this.dispatchOperationEnd();
+    }
   }
 
   normalizePath(command, args) {
     if (command === 'os') return args;
     return args.map(link => {
-      if (path.isAbsolute(link)) {
-        return link;
+      const newLink = link.replaceAll('%s', ' ');
+      if (path.isAbsolute(newLink)) {
+        return newLink;
       }
-      return path.join(EventHandler.HOME_DIR, link);
+      return path.join(EventHandler.HOME_DIR, newLink);
     })
   }
 }

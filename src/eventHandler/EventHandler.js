@@ -18,19 +18,19 @@ export default class EventHandler {
 
   setInputErrorEvent() {
     this.event.on(this.eventsName.INPUT_ERROR, () => {
-      console.log('Invalid input\n');
+      console.error('Invalid input');
     });
   }
 
   setOperationErrorEvent() {
     this.event.on(this.eventsName.OPERATION_ERROR, () => {
-      console.log('Operation failed\n');
+      console.error('Operation failed');
     });
   }
 
   setOperationEndEvent() {
     this.event.on(this.eventsName.OPERATION_END, () => {
-      console.log(`\nYou are currently in ${EventHandler.HOME_DIR}\n`);
+      console.info(`\nYou are currently in ${EventHandler.HOME_DIR}\n`);
     });
   }
 

@@ -16,11 +16,11 @@ export default class CompressController extends EventHandler {
   parseParams(command, ...args) {
     if (args.length < 2) {
       this.dispatchInputError();
+      this.dispatchOperationEnd();
       return;
     }
 
     this.commandsList[command].call(this, ...args);
-    //this.dispatchOperationEnd();
   }
 
   createCompressFile(filePath, compressPath) {
@@ -29,15 +29,18 @@ export default class CompressController extends EventHandler {
     const compressProcess = createBrotliCompress();
 
     readFile.on('error',() => {
-      this.dispatchOperationError()
+      this.dispatchOperationError();
+      this.dispatchOperationEnd();
     });
 
     compressFile.on('error',() => {
-      this.dispatchOperationError()
+      this.dispatchOperationError();
+      this.dispatchOperationEnd();
     });
 
     compressProcess.on('error',() => {
-      this.dispatchOperationError()
+      this.dispatchOperationError();
+      this.dispatchOperationEnd();
     });
 
     compressFile.on('close', () => {
@@ -53,15 +56,18 @@ export default class CompressController extends EventHandler {
     const compressProcess = createBrotliDecompress();
 
     readFile.on('error',() => {
-      this.dispatchOperationError()
+      this.dispatchOperationError();
+      this.dispatchOperationEnd();
     });
 
     decompressFile.on('error',() => {
-      this.dispatchOperationError()
+      this.dispatchOperationError();
+      this.dispatchOperationEnd();
     });
 
     compressProcess.on('error',() => {
-      this.dispatchOperationError()
+      this.dispatchOperationError();
+      this.dispatchOperationEnd();
     });
 
     decompressFile.on('close', () => {

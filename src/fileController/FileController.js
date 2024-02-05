@@ -1,6 +1,7 @@
 import EventHandler from '../eventHandler/EventHandler.js';
 import {createReadStream, createWriteStream} from 'fs';
-import {rename, rm, copyFile} from 'fs/promises';
+import {rename, rm} from 'fs/promises';
+import path from 'path';
 
 export default class FileController extends EventHandler {
   constructor() {
@@ -26,7 +27,6 @@ export default class FileController extends EventHandler {
   }
 
   readFile(path) {
-    console.log(path);
     const fileRead = createReadStream(path);
 
     fileRead.on('error', () => {
@@ -46,7 +46,7 @@ export default class FileController extends EventHandler {
       this.dispatchOperationError();
     })
 
-    newFile.on('close', () => {
+    newFile.on('ready', () => {
       this.dispatchOperationEnd();
     })
   }
@@ -57,7 +57,10 @@ export default class FileController extends EventHandler {
       return;
     }
 
-    rename(oldPath, newPath).catch(() => {
+    const folder = path.dirname(oldPath);
+    const newName = path.basename(newPath);
+
+    rename(oldPath, path.join(folder, newName)).catch(() => {
       this.dispatchOperationError();
     }).finally(() => {
       this.dispatchOperationEnd();
@@ -67,14 +70,31 @@ export default class FileController extends EventHandler {
   copyFile(copiedFile, newFile) {
     if (!newFile) {
       this.dispatchInputError();
+      this.dispatchOperationEnd();
       return;
     }
 
-    copyFile(copiedFile, newFile).catch(() => {
+    const newFilePath = path.join(newFile, path.basename(copiedFile))
+
+    const readStream = createReadStream(copiedFile);
+    const writeStream = createWriteStream(newFilePath);
+
+    readStream.on('error', () => {
       this.dispatchOperationError();
-    }).finally(() => {
       this.dispatchOperationEnd();
-    });
+      writeStream.end();
+    })
+
+    writeStream.on('error', () => {
+      this.dispatchOperationError();
+      this.dispatchOperationEnd();
+    })
+
+    readStream.on('end', () => {
+      this.dispatchOperationEnd();
+    })
+
+    readStream.pipe(writeStream);
   }
 
   moveFile(oldPath, newPath) {
@@ -88,10 +108,12 @@ export default class FileController extends EventHandler {
 
     readStream.on('error', () => {
       this.dispatchOperationError();
+      this.dispatchOperationEnd();
     });
 
     writeStream.on('error', () => {
       this.dispatchOperationError();
+      this.dispatchOperationEnd();
     });
 
     readStream.pipe(writeStream);
