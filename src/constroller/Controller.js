@@ -24,11 +24,6 @@ export default class Controller extends EventHandler{
     }
 
     this.EOL = this.osController.getEOL();
-    this.currentPath = this.osController.getHomeDir();
-
-    this.event.on(this.eventsName.OPERATION_END, () => {
-      console.log(`\nYou are currently in ${this.currentPath}\n`);
-    })
   }
 
   startHandler(value) {

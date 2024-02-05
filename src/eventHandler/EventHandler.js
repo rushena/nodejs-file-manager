@@ -1,6 +1,8 @@
 import EventEmitter from 'events';
+import os from 'os';
 
 export default class EventHandler {
+  static HOME_DIR = os.homedir();
 
   constructor() {
     this.event = new EventEmitter();
@@ -26,9 +28,16 @@ export default class EventHandler {
     });
   }
 
+  setOperationEndEvent() {
+    this.event.on(this.eventsName.OPERATION_END, () => {
+      console.log(`\nYou are currently in ${EventHandler.HOME_DIR}\n`);
+    });
+  }
+
   setEvents() {
     this.setInputErrorEvent()
     this.setOperationErrorEvent();
+    this.setOperationEndEvent();
   }
 
   dispatchInputError() {
