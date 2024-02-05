@@ -1,3 +1,4 @@
+import path from 'path';
 import OsController from '../osController/OsController.js';
 import CompressController from '../compressController/CompressController.js';
 import FileController from '../fileController/FileController.js';
@@ -29,14 +30,21 @@ export default class Controller extends EventHandler{
   startHandler(value) {
     const valueArr = value.trim().replace(this.EOL, '').split(' ');
     const command = valueArr.shift();
+
     Object.entries(this.commandsHandler).forEach(([key, val]) => {
       if (!val.includes(command)) return;
 
-      this[key].parseParams(command, ...valueArr);
+      this[key].parseParams(command, ...(this.normalizePath(command, valueArr)));
     })
   }
 
-  normalizePath() {
-
+  normalizePath(command, args) {
+    if (command === 'os') return args;
+    return args.map(link => {
+      if (path.isAbsolute(link)) {
+        return link;
+      }
+      return path.join(EventHandler.HOME_DIR, link);
+    })
   }
 }
