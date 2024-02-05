@@ -12,6 +12,8 @@ export default class Controller {
     this.hashController = new HashController();
     this.navigationController = new NavigationController();
 
+
+
     this.commandsHandler = {
       'navigationController': ['up', 'cd', 'ls'],
       'fileController': ['cat', 'add', 'rn', 'cp', 'mv', 'rm'],
@@ -20,16 +22,17 @@ export default class Controller {
       'hashController': ['hash']
     }
 
-    this.currentPath = '';
+    this.EOL = this.osController.getEOL();
+    this.currentPath = this.osController.getHomeDir();
   }
 
   startHandler(value) {
-    const valueArr = value.split(' ');
+    const valueArr = value.trim().replace(this.EOL, '').split(' ');
     const command = valueArr.shift();
-
     Object.entries(this.commandsHandler).forEach(([key, val]) => {
-      console.log(key, val);
-      console.log(command, valueArr);
+      if (!val.includes(command)) return;
+
+      this[key].parseParams(command, ...valueArr);
     })
   }
 
