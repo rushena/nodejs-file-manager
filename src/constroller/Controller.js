@@ -12,8 +12,6 @@ export default class Controller {
     this.hashController = new HashController();
     this.navigationController = new NavigationController();
 
-
-
     this.commandsHandler = {
       'navigationController': ['up', 'cd', 'ls'],
       'fileController': ['cat', 'add', 'rn', 'cp', 'mv', 'rm'],

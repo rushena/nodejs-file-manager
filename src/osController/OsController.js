@@ -24,7 +24,7 @@ export default class OsController extends EventHandler{
       handler && handler.call(this);
     });
 
-    this.emit(this.eventsName.OPERATION_END);
+    this.dispatchOperationEnd();
   }
 
   printArch () {
