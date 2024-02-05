@@ -25,6 +25,7 @@ export default class HashController extends EventHandler {
 
     readFile.on('error', () => {
       this.dispatchOperationError();
+      this.dispatchOperationEnd();
     })
 
     readFile.pipe(transformFile).pipe(process.stdout);
