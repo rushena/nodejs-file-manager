@@ -3,9 +3,12 @@ import CompressController from '../compressController/CompressController.js';
 import FileController from '../fileController/FileController.js';
 import HashController from '../hashController/HashController.js';
 import NavigationController from '../navigationController/NavigationController.js';
+import EventHandler from '../eventHandler/EventHandler.js';
 
-export default class Controller {
+export default class Controller extends EventHandler{
   constructor() {
+    super();
+
     this.osController = new OsController();
     this.compressController = new CompressController();
     this.fileController = new FileController();
@@ -22,6 +25,10 @@ export default class Controller {
 
     this.EOL = this.osController.getEOL();
     this.currentPath = this.osController.getHomeDir();
+
+    this.event.on(this.eventsName.OPERATION_END, () => {
+      console.log(`\nYou are currently in ${this.currentPath}\n`);
+    })
   }
 
   startHandler(value) {

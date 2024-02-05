@@ -17,6 +17,8 @@ export class App {
     process.on('SIGINT', () => {
       this.exitProcess();
     });
+
+    this.Controller.dispatchOperationEnd();
   }
 
   onGetStdinData(chunk) {
